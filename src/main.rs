@@ -35,6 +35,6 @@ fn handle_connection(mut stream: TcpStream) {
         println!("{}", line.unwrap());
     }
 
-    let response = "+PONG\r\n";
-    stream.write_all(response.as_bytes()).unwrap();
+    let response = "+PONG\r\n".as_bytes();
+    stream.write_all(response).unwrap();
 }
