@@ -30,8 +30,9 @@ fn handle_connection(mut stream: TcpStream) {
 
     let request = buf_reader.lines();
 
+    println!("incoming data: ");
     for line in request {
-        println!("incoming data {:?}", line.unwrap());
+        println!("{}", line.unwrap());
     }
 
     let response = "+PONG\r\n";
