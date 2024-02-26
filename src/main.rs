@@ -26,20 +26,10 @@ fn main() {
 }
 
 fn handle_connection(mut stream: TcpStream) {
-    let buf_reader = BufReader::new(&mut stream);
+    let mut buffer = [0; 256];
 
-    let incoming: Vec<_> = buf_reader
-        .lines()
-        .map(|result| result.unwrap())
-        .take_while(|line| !line.is_empty())
-        .collect();
-
-    // println!("incoming data:{:?}", incoming);
-    for line in incoming {
-        if line.as_bytes() == "*1".as_bytes() || line.as_bytes() == "$4".as_bytes() {
-            continue;
-        };
+    if let Ok(n) = stream.read(&mut buffer) {
         let response = "+PONG\r\n".as_bytes();
-        stream.write_all(response).unwrap();
+        stream.write_all(response).expect("failed to write");
     }
 }
