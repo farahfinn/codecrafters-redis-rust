@@ -28,9 +28,11 @@ fn main() {
 fn handle_connection(mut stream: TcpStream) {
     let buf_reader = BufReader::new(&mut stream);
 
-    let request = buf_reader.lines().next().unwrap().unwrap();
+    let request = buf_reader.lines();
 
-    println!("incoming data {:?}", request);
+    for line in request {
+        println!("incoming data {:?}", line.unwrap());
+    }
 
     let response = "+PONG\r\n";
     stream.write_all(response.as_bytes()).unwrap();
