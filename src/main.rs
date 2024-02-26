@@ -1,5 +1,8 @@
 // Uncomment this block to pass the first stage
-use std::net::TcpListener;
+use std::{
+    io::{prelude::*, BufReader},
+    net::{TcpListener, TcpStream},
+};
 
 fn main() {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -11,12 +14,24 @@ fn main() {
 
     for stream in listener.incoming() {
         match stream {
-            Ok(_stream) => {
+            Ok(stream) => {
                 println!("accepted new connection");
+                handle_connection(stream);
             }
             Err(e) => {
                 println!("error: {}", e);
             }
         }
     }
+}
+
+fn handle_connection(mut stream: TcpStream) {
+    let buf_reader = BufReader::new(&mut stream);
+
+    let request = buf_reader.lines().next().unwrap().unwrap();
+
+    println!("incoming data {:?}", request);
+
+    let response = "+PONG\r\n";
+    stream.write_all(response.as_bytes()).unwrap();
 }
