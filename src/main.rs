@@ -28,11 +28,15 @@ fn main() {
 fn handle_connection(mut stream: TcpStream) {
     let buf_reader = BufReader::new(&mut stream);
 
-    let request = buf_reader.lines();
+    let incoming: Vec<String> = buf_reader
+        .lines()
+        .map(|result| result.unwrap())
+        .take_while(|line| !line.is_empty())
+        .collect();
 
     println!("incoming data: ");
-    for line in request {
-        println!("{}", line.unwrap());
+    for line in incoming {
+        println!("{}", line);
     }
 
     let response = "+PONG\r\n".as_bytes();
