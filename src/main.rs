@@ -30,7 +30,7 @@ fn handle_connection(mut stream: TcpStream) {
 
     while let Ok(n) = stream.read(&mut buffer) {
         let response = "+PONG\r\n".as_bytes();
-        println!("{:?}", &buffer[..n]);
+        println!("{:?}", &buffer[..n].make_ascii_uppercase());
         stream.write_all(response).expect("failed to write");
     }
 }
