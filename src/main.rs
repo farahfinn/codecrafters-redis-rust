@@ -34,7 +34,7 @@ fn handle_connection(mut stream: TcpStream) {
         .take_while(|line| !line.is_empty())
         .collect();
 
-    println!("incoming data:{:?}", incoming);
+    // println!("incoming data:{:?}", incoming);
 
     let response = "+PONG\r\n+PONG\r\n".as_bytes();
 
