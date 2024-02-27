@@ -29,7 +29,7 @@ fn main() {
 
 fn handle_connection(mut stream: TcpStream) {
     //buffer to store incoming bytes
-    let mut buffer = [0; 256];
+    let mut buffer = [0; 512];
     //while the stream is still recieving data send back a response
     //read method returns an Ok containing size of read bytes
     while let Ok(n) = stream.read(&mut buffer) {
