@@ -2,7 +2,7 @@
 use std::{
     io::{prelude::*, BufReader},
     net::{TcpListener, TcpStream},
-    thread,
+    str, thread,
 };
 
 fn main() {
@@ -34,7 +34,7 @@ fn handle_connection(mut stream: TcpStream) {
     //read method returns an Ok containing size of read bytes
     while let Ok(n) = stream.read(&mut buffer) {
         let response = "+PONG\r\n".as_bytes();
-        println!("{:?}", &buffer[..n].to_ascii_uppercase());
+        println!("{:?}", str::from_utf8(&buffer[..n]).unwrap());
         stream.write_all(response).expect("failed to write");
     }
 }
