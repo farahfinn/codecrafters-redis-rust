@@ -53,6 +53,7 @@ fn handle_connection(mut stream: TcpStream) {
                         let res = incoming_cmd[idx + 2].as_bytes();
                         stream.write_all(res).expect("failed to write echo");
                     }
+
                     println!("{line}");
                 }
             }
