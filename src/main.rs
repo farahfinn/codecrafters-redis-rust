@@ -21,7 +21,7 @@ fn main() {
                 thread::spawn(move || handle_connection(stream));
             }
             Err(e) => {
-                println!("error: {}", e);
+                eprintln!("error: {}", e);
             }
         }
     }
@@ -36,14 +36,22 @@ fn handle_connection(mut stream: TcpStream) {
                 break;
             }
             Ok(n) => {
-                let incoming_cmd = str::from_utf8(&buffer[..n])
+                //collect the incoming request into a vec
+                let incoming_cmd: Vec<_> = str::from_utf8(&buffer[..n])
                     .expect("failed to convert to string")
-                    .split_whitespace();
-                for line in incoming_cmd {
-                    if let "ping" = line {
+                    .split_whitespace()
+                    .collect();
+
+                //check if it contains ping or echo and respond accordingly
+                for (idx, line) in incoming_cmd.iter().enumerate() {
+                    if let true = line.to_uppercase().contains("PING") {
                         stream
                             .write_all("+PONG\r\n".as_bytes())
                             .expect("failed to write");
+                    }
+                    if let true = line.to_uppercase().contains("ECHO") {
+                        let res = incoming_cmd[idx + 2].as_bytes();
+                        stream.write_all(res).expect("failed to write echo");
                     }
                     println!("{line}");
                 }
