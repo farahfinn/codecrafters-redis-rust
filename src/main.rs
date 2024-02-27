@@ -28,13 +28,28 @@ fn main() {
 }
 
 fn handle_connection(mut stream: TcpStream) {
-    //buffer to store incoming bytes
-    let mut buffer = [0; 512];
-    //while the stream is still recieving data send back a response
-    //read method returns an Ok containing size of read bytes
-    while let Ok(n) = stream.read(&mut buffer) {
-        let response = "+PONG\r\n".as_bytes();
-        println!("{:?}", str::from_utf8(&buffer[..n]).unwrap());
-        stream.write_all(response).expect("failed to write");
+    loop {
+        let mut buffer = [0; 256];
+        match stream.read(&mut buffer) {
+            Ok(n) if n == 0 => {
+                println!("finished reading");
+                break;
+            }
+            Ok(n) => {
+                let incoming_cmd = str::from_utf8(&buffer[..n])
+                    .expect("failed to convert to string")
+                    .split_whitespace();
+                for line in incoming_cmd {
+                    if line.contains("PING") {
+                        stream
+                            .write_all("+PONG\r\n".as_bytes())
+                            .expect("failed to write");
+                    }
+                }
+            }
+            Err(e) => {
+                eprintln!("failed due to this error: {e}");
+            }
+        }
     }
 }
