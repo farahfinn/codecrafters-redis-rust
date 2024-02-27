@@ -32,7 +32,7 @@ fn handle_connection(mut stream: TcpStream) {
         let mut buffer = [0; 256];
         match stream.read(&mut buffer) {
             Ok(0) => {
-                println!("finished reading");
+                println!("stream reached end");
                 break;
             }
             Ok(n) => {
@@ -50,7 +50,9 @@ fn handle_connection(mut stream: TcpStream) {
                             .expect("failed to write");
                     }
                     if let true = line.to_uppercase().contains("ECHO") {
-                        let res = incoming_cmd[idx + 2].as_bytes();
+                        let res =
+                            format!("{}\r\n{}\r\n", incoming_cmd[idx + 1], incoming_cmd[idx + 2]);
+                        let res = res.as_bytes();
                         stream.write_all(res).expect("failed to write echo");
                     }
 
