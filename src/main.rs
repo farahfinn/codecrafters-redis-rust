@@ -40,7 +40,7 @@ fn handle_connection(mut stream: TcpStream) {
                     .expect("failed to convert to string")
                     .split_whitespace();
                 for line in incoming_cmd {
-                    if let "PING" = line {
+                    if let "ping" = line {
                         stream
                             .write_all("+PONG\r\n".as_bytes())
                             .expect("failed to write");
