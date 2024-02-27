@@ -17,6 +17,7 @@ fn main() {
         match stream {
             Ok(stream) => {
                 println!("accepted new connection");
+                //Each new incoming stream to be handled in own thread
                 thread::spawn(move || handle_connection(stream));
             }
             Err(e) => {
@@ -27,11 +28,13 @@ fn main() {
 }
 
 fn handle_connection(mut stream: TcpStream) {
+    //buffer to store incoming bytes
     let mut buffer = [0; 256];
-
+    //while the stream is still recieving data send back a response
+    //read method returns an Ok containing size of read bytes
     while let Ok(n) = stream.read(&mut buffer) {
         let response = "+PONG\r\n".as_bytes();
-        println!("{:?}", &buffer[..n].make_ascii_uppercase());
+        println!("{:?}", &buffer[..n].to_ascii_uppercase());
         stream.write_all(response).expect("failed to write");
     }
 }
