@@ -31,7 +31,7 @@ fn handle_connection(mut stream: TcpStream) {
     loop {
         let mut buffer = [0; 256];
         match stream.read(&mut buffer) {
-            Ok(n) if n == 0 => {
+            Ok(0) => {
                 println!("finished reading");
                 break;
             }
